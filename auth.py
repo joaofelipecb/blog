@@ -68,3 +68,8 @@ def load_logged_in_user():
                 'select * from user where user_id = ?', (user_id)
         ).fetchone()
 
+@bp.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
+
