@@ -19,13 +19,13 @@ def register():
         elif not password:
             error = 'Password is required.'
         elif db.execute(
-                'select id from user where username = ?', (username,)
+                'select user_id from user where user_username = ?', (username,)
         ).fetchone() is not None:
             error = f"User {username} is alread registered."
 
         if error is None:
             db.execute(
-                'insert into user(username, password) values(?, ?)',
+                'insert into user(user_username, user_password) values(?, ?)',
                 (username, generate_password_hash(password))
             )
             db.commit()
@@ -41,17 +41,17 @@ def login():
         db = get_db()
         error = None
         user = db.execute(
-                'select * from user where username = ?', (username,)
+                'select * from user where user_username = ?', (username,)
         ).fetchone()
         
         if user is None:
             error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
+        elif not check_password_hash(user['user_password'], password):
             error = 'Incorrect password.'
 
         if error is None:
             session.clear()
-            session.['user_id'] = user['id']
+            session.['user_id'] = user['user_id']
             return redirect(url_for('index'))
 
         flash(error)
