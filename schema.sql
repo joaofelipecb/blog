@@ -4,7 +4,7 @@ drop table if exists post;
 create table user (
 	user_id integer primary key autoincrement,
 	user_username text unique not null,
-	user_password text not null,
+	user_password text not null
 );
 
 create table post (
