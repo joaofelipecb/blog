@@ -12,7 +12,9 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def register():
     if request.method == 'POST':
         username = request.form['username']
-        password = redirect.form['password']
+        password = request.form['password']
+        db = get_db()
+        error = None
 
         if not username:
             error = 'Username is required.'
@@ -51,7 +53,7 @@ def login():
 
         if error is None:
             session.clear()
-            session.['user_id'] = user['user_id']
+            session['user_id'] = user['user_id']
             return redirect(url_for('index'))
 
         flash(error)
