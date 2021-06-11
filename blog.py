@@ -17,7 +17,7 @@ def index():
    from post
    natural join user
    order by post_created desc'''
-   )
+    )
     return render_template('blog/index.html', posts=posts)
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -30,22 +30,26 @@ def create():
 
         if not title:
             error = 'Title is required.'
-        else:
+
+        if error is None:
             db = get_db()
             db.execute(
 '''insert into post (post_title, post_body, user_id)
 values (?, ?, ?)''',
-            (title, body, g.user['id'])
+            (title, body, g.user['user_id'])
             )
-            return redirect(url_for('blog.index'))
-        return render_template('blog/create.html')
+            db.commit()
+        else:
+            flash(error)
+        return redirect(url_for('blog.index'))
+    return render_template('blog/create.html')
 
 def get_post(id, check_author=True):
     post = get_db().execute(
 '''select post_id, post_title, post_body, post_created, user_id, user_username
 from post
 natural join user
-where post_id = ?''').fetchone()
+where post_id = ?''', (id,)).fetchone()
     
     if post is None:
         abort(404, f"Post id {id} doesn't exist.")
@@ -73,13 +77,13 @@ def update(id):
         else:
             db = get_db()
             db.execute(
-'''update post set post_title = ?, body = ?
-where id = ?''',
+'''update post set post_title = ?, post_body = ?
+where post_id = ?''',
                 (title, body, id)
             )
             db.commit()
-            return redirect(url_for('blog.index'))
-        return render_template('blog/update.html', post=post)
+        return redirect(url_for('blog.index'))
+    return render_template('blog/update.html', post=post)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
