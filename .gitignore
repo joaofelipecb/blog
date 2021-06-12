@@ -3,3 +3,5 @@
 *.swo
 __pycache__
 launch.bat
+p17data/config.html
+
