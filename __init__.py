@@ -3,7 +3,7 @@ from flask import Flask
 
 def load_config():
     import xml.etree.ElementTree as ET
-    tree = ET.parse('p17data/config.html')
+    tree = ET.parse('blog/p17data/config.html')
     articles = tree.findall('body/article')
     config = {}
     for article in articles:

@@ -1,18 +1,20 @@
-drop table if exists user;
-drop table if exists post;
+drop table if exists users;
+drop table if exists posts;
 
-create table user (
-	user_id integer primary key autoincrement,
+create table users (
+	user_id serial,
 	user_username text unique not null,
-	user_password text not null
+	user_password text not null,
+	primary key(user_id)
 );
 
-create table post (
-	post_id integer primary key autoincrement,
+create table posts (
+	post_id serial,
 	user_id integer not null,
 	post_created timestamp not null default current_timestamp,
 	post_title text not null,
 	post_body text not null,
-	foreign key (user_id) references user (user_id)
+	primary key(post_id),
+	constraint posts_fk_users foreign key(user_id) references users(user_id)
 );
 
