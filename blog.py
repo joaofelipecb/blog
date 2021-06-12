@@ -1,3 +1,4 @@
+
 from flask import (
         Blueprint, flash, g, redirect, render_template, request, url_for
 )
@@ -9,8 +10,9 @@ bp = Blueprint('blog', __name__)
 
 @bp.route('/')
 def index():
+    import psycopg2.extras
     db = get_db()
-    cur = db.cursor()
+    cur = db.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
     cur.execute(
 '''select post_id, post_title, post_body, post_created,
           user_id, user_username
